@@ -5,21 +5,13 @@
       max-width="600"
     >
 
-    <modal></modal>
 
-      <template v-slot:activator="{ props: activatorProps }">
-        <v-btn
-          class="text-none font-weight-regular"
-          prepend-icon="mdi-account"
-          text="Edit Profile"
-          variant="tonal"
-          v-bind="activatorProps"
-        ></v-btn>
-      </template>
+
+
 
       <v-card
         prepend-icon="mdi-account"
-        title="User Profile"
+        :title="titleModal"
       >
         <v-card-text>
           <v-row dense>
@@ -29,8 +21,10 @@
               sm="6"
             >
               <v-text-field
-                label="First name*"
+                label="Nombre"
                 required
+                hint="Nombre"
+                v-model="itemModal.name"
               ></v-text-field>
             </v-col>
 
@@ -40,8 +34,10 @@
               sm="6"
             >
               <v-text-field
-                hint="example of helper text only on focus"
-                label="Middle name"
+                hint="Apellido"
+                label="Apellido"
+                v-model="itemModal.lastname"
+
               ></v-text-field>
             </v-col>
 
@@ -51,9 +47,10 @@
               sm="6"
             >
               <v-text-field
-                hint="example of persistent helper text"
-                label="Last name*"
-                persistent-hint
+                hint="Cédula"
+                label="Cédula"
+                v-model="itemModal.cedula"
+
                 required
               ></v-text-field>
             </v-col>
@@ -66,55 +63,12 @@
               <v-text-field
                 label="Email*"
                 required
+                hint="Correo electrónico"
+                v-model="itemModal.email"
+
               ></v-text-field>
             </v-col>
 
-            <v-col
-              cols="12"
-              md="4"
-              sm="6"
-            >
-              <v-text-field
-                label="Password*"
-                type="password"
-                required
-              ></v-text-field>
-            </v-col>
-
-            <v-col
-              cols="12"
-              md="4"
-              sm="6"
-            >
-              <v-text-field
-                label="Confirm Password*"
-                type="password"
-                required
-              ></v-text-field>
-            </v-col>
-
-            <v-col
-              cols="12"
-              sm="6"
-            >
-              <v-select
-                :items="['0-17', '18-29', '30-54', '54+']"
-                label="Age*"
-                required
-              ></v-select>
-            </v-col>
-
-            <v-col
-              cols="12"
-              sm="6"
-            >
-              <v-autocomplete
-                :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                label="Interests"
-                auto-select-first
-                multiple
-              ></v-autocomplete>
-            </v-col>
           </v-row>
 
           <small class="text-caption text-medium-emphasis">*indicates required field</small>
@@ -143,10 +97,34 @@
   </div>
 </template>
 <script>
-import Modal from './Modal.vue';
   export default {
-    data: () => ({
-      dialog: false,
-    }),
+
+    props:{
+      itemModal:{
+        name:'',
+        lastname:'',
+        email:'',
+        cedula:''
+      },
+      titleModal:{
+        type: String,
+        required:true
+      },
+      abrir:{
+        type:Boolean,
+        required:true
+      }
+
+    },
+    data(){
+      return{
+        dialog:false
+      }
+    },
+    methods:{
+      abrirModal(){
+        this.dialog=true;
+      }
+    }
   }
 </script>
