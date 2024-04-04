@@ -1,0 +1,4 @@
+<template>
+  <menu></menu>
+
+</template>

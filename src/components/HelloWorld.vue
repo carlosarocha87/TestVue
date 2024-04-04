@@ -1,16 +1,7 @@
 <template>
-   <div class="pa-4 text-center">
-  <v-btn
-          class="text-none font-weight-regular"
-          prepend-icon="mdi-account"
-          color="info"
-          text="Crea Usuario"
-          variant="tonal"
-          @click="modal('',true)"
-        ></v-btn>
-</div>
+
   <v-card
-    title="Nutrition"
+    title="Listado de Usuarios"
     flat
   >
   <modal :titleModal="titulo"  ref="modalRef" :abrir="true" :itemModal="itemActual" :btncrear="btncrear" @form-submitted="accionModal"></modal>
@@ -19,7 +10,7 @@
 
 
 
-    <template v-slot:text>
+    <!--<template v-slot:text>
       <v-text-field
         v-model="search"
         label="Search"
@@ -28,9 +19,34 @@
         hide-details
         single-line
       ></v-text-field>
-    </template>
+    </template>-->
 
 
+    <v-card-title class="d-flex align-center pe-2">
+      <div class="pa-4 text-center">
+      <v-btn
+              class="text-none font-weight-regular"
+              prepend-icon="mdi-account"
+              color="info"
+              text="Crea Usuario"
+              variant="tonal"
+              @click="modal('',true)"
+            ></v-btn>
+    </div>
+
+      <v-spacer></v-spacer>
+
+      <v-text-field
+        v-model="search"
+        density="compact"
+        label="Search"
+        prepend-inner-icon="mdi-magnify"
+        variant="solo-filled"
+        flat
+        hide-details
+        single-line
+      ></v-text-field>
+    </v-card-title>
 
     <v-data-table
       :headers="headers"
