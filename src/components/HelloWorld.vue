@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    title="Nutrition"
-    flat
-  >
-
+   <div class="pa-4 text-center">
   <v-btn
           class="text-none font-weight-regular"
           prepend-icon="mdi-account"
@@ -12,8 +8,14 @@
           variant="tonal"
           @click="modal('',true)"
         ></v-btn>
+</div>
+  <v-card
+    title="Nutrition"
+    flat
+  >
+  <modal :titleModal="titulo"  ref="modalRef" :abrir="true" :itemModal="itemActual" :btncrear="btncrear" @form-submitted="accionModal"></modal>
 
-  <modal :titleModal="titulo"  ref="modalRef" :abrir="true" :itemModal="itemActual"></modal>
+
 
 
 
@@ -82,7 +84,9 @@ import Modal from './Modal.vue';
           lastname:'',
           email:'',
           cedula:''
-        }
+        },
+        dataSubmitted:'',
+        btncrear:true
       }
 
 
@@ -102,18 +106,157 @@ import Modal from './Modal.vue';
         });
       },
       eliminar(item){
+      console.log(item.id);
+
+      this.$swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Eliminar!"
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+
+             this.axios.delete(this.api+"/"+item.id)
+            .then((response) => {
+              this.getList();
+              /*this.$swal.fire({
+              position: "top-end",
+              title: "Eliminado!",
+              text: "El registro ha sido eliminado con exito",
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1500
+            });*/
+
+                const Toast = this.$swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 3000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.onmouseenter = this.$swal.stopTimer;
+                    toast.onmouseleave = this.$swal.resumeTimer;
+                  }
+                });
+                Toast.fire({
+                  icon: "success",
+                  title: "Eliminado con exito"
+                });
+
+            }).catch((error) => {
+              console.log(error);
+              this.$swal.fire({
+              position: "top-end",
+              icon: "error",
+              title: "Error al eliminar",
+              showConfirmButton: false,
+              timer: 1500
+              });
+
+            });
+
+
+
+
+          }
+        });
+
+
+
 
       },
-      modificar(item){
-        this.titulo="Modificar Registro";
-        this.itemActual={...item};
-        console.log('modificar',  this.itemActual);
+
+     async update(item){
+      this.dialogo=false;
+        await this.axios.put(this.api+"/"+item.id,item)
+        .then((response) => {
+          this.getList();
+          this.$refs.modalRef.cerrarModal();
+
+          const Toast = this.$swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = this.$swal.stopTimer;
+                toast.onmouseleave = this.$swal.resumeTimer;
+              }
+            });
+            Toast.fire({
+              icon: "success",
+              title: "Modificado con éxito"
+            });
+
+        }).catch((error) => {
+          this.$refs.modalRef.cerrarModal();
+          this.$swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Error al modificar",
+          showConfirmButton: false,
+          timer: 1500
+          });
+
+        });
+
+
 
       },
-      crear(item){
-        this.titulo="Agregar Registro";
-        console.log('crear',item);
+      async create(item){
+        console.log(item);
+        this.dialogo=false;
+        await this.axios.post(this.api,item)
+        .then((response) => {
+          this.getList();
+          this.$refs.modalRef.cerrarModal();
+          const Toast = this.$swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = this.$swal.stopTimer;
+                toast.onmouseleave = this.$swal.resumeTimer;
+              }
+            });
+            Toast.fire({
+              icon: "success",
+              title: "guardado con éxito"
+            });
 
+
+
+        }).catch((error) => {
+          this.$refs.modalRef.cerrarModal();
+          this.$swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Error al guardar ",
+          showConfirmButton: false,
+          timer: 1500
+          });
+
+        });
+
+
+      },
+      accionModal(data){
+        if(data.tipo==1){
+          //si el tipo es igual a uno es para guardar
+          this.create(data.data);
+        }else if(data.tipo==2){
+          //si el tipo es igual a uno es para guardar
+          this.update(data.data);
+        }
+       // console.log("datos de modal",data);
       },
       modal(item, accion){
         this.dialogo=true;
@@ -126,10 +269,13 @@ import Modal from './Modal.vue';
               email:'',
               cedula:''
             };
-          this.crear(item);
+            this.titulo="Agregar Registro";
+            this.btncrear=true;
         }else{
 
-          this.modificar(item);
+          this.titulo="Modificar Registro";
+          this.itemActual={...item};
+          this.btncrear=false;
 
         }
       },

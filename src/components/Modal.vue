@@ -25,6 +25,7 @@
                 required
                 hint="Nombre"
                 v-model="itemModal.name"
+                :rules="nameRules"
               ></v-text-field>
             </v-col>
 
@@ -37,7 +38,7 @@
                 hint="Apellido"
                 label="Apellido"
                 v-model="itemModal.lastname"
-
+                :rules="lastnameRules"
               ></v-text-field>
             </v-col>
 
@@ -50,7 +51,7 @@
                 hint="Cédula"
                 label="Cédula"
                 v-model="itemModal.cedula"
-
+                :rules="cedulaRules"
                 required
               ></v-text-field>
             </v-col>
@@ -65,7 +66,7 @@
                 required
                 hint="Correo electrónico"
                 v-model="itemModal.email"
-
+                :rules="emailRules"
               ></v-text-field>
             </v-col>
 
@@ -87,9 +88,17 @@
 
           <v-btn
             color="primary"
-            text="Save"
+            text="Guardar"
             variant="tonal"
-            @click="dialog = false"
+            @click="Guardar(1);"
+            v-if="btncrear"
+          ></v-btn>
+          <v-btn
+            color="primary"
+            text="Modificar"
+            variant="tonal"
+            @click="Guardar(2)"
+            v-else
           ></v-btn>
         </v-card-actions>
       </v-card>
@@ -113,18 +122,63 @@
       abrir:{
         type:Boolean,
         required:true
+      },
+      btncrear:{
+        type:Boolean,
+        required:true
       }
+
 
     },
     data(){
+
       return{
-        dialog:false
+        name: '',
+        nameRules: [
+          v => !!v || 'Name is required',
+          v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+        ],
+        lastnameRules: [
+          v => !!v || 'Name is required',
+          v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+        ],
+        cedulaRules: [
+          v => !!v || 'Name is required',
+          v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+        ],
+        emailRules: [
+          v => !!v || 'Name is required',
+          v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+        ],
+
+        dialog:false,
+        formtipe:1,
+
+
       }
     },
     methods:{
       abrirModal(){
         this.dialog=true;
+      },
+      cerrarModal(){
+        this.dialog=false;
+      },
+      Guardar(tipo){
+       /* await this.axios.post(this.api,this. itemModal)
+        .then((response) => {
+
+
+        }).catch((error) => {
+
+
+        });*/
+
+          this.$emit('form-submitted', {data:this.itemModal,tipo: tipo});
+
+
       }
+
     }
   }
 </script>
